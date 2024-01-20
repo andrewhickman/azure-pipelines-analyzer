@@ -1,0 +1,12 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parser.finish()
+---
+Parse {
+    node: Directive@0..8
+      DirectiveToken@0..1 "%"
+      DirectiveName@1..5 "YAML"
+      DirectiveParameter@5..8 "1.2"
+    ,
+    errors: [],
+}

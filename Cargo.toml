@@ -1,5 +1,5 @@
 [workspace]
 resolver = "2"
 members = [
-    "azure-pipelines-analyser"
+    "azure-pipelines-analyzer"
 ]

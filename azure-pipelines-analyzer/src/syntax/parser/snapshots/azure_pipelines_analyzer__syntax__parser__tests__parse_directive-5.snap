@@ -1,0 +1,10 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parser.finish()
+---
+Parse {
+    node: Error@0..3
+      Error@0..3 "foo"
+    ,
+    errors: [],
+}

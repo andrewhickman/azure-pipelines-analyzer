@@ -1,4 +1,4 @@
-# azure-pipelines-analyser
+# azure-pipelines-analyzer
 
 A language server and standalone linter for validating Azure DevOps [YAML pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops).
 
