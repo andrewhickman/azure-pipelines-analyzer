@@ -12,5 +12,11 @@ Parse {
         InlineSeparator@11..12 " "
         Error@12..24 "ภาษา"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 12..24,
+            severity: Error,
+            message: "invalid initial tag prefix character",
+        },
+    ],
 }

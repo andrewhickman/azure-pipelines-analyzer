@@ -10,5 +10,16 @@ Parse {
       Error@5..8 "foo"
       Error@8..8 ""
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 5..8,
+            severity: Error,
+            message: "invalid tag handle: expected '!'",
+        },
+        Diagnostic {
+            span: 8..8,
+            severity: Error,
+            message: "expected tag prefix",
+        },
+    ],
 }

@@ -1,10 +1,16 @@
 ---
 source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
-expression: parser.finish()
+expression: parse
 ---
 Parse {
     node: Root@0..3
       Error@0..3 "foo"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 0..3,
+            severity: Error,
+            message: "expected '%'",
+        },
+    ],
 }

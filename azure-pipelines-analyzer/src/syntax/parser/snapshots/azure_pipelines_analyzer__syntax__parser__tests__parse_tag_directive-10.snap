@@ -10,5 +10,11 @@ Parse {
       NamedTagHandle@5..10 "!foo!"
       Error@10..10 ""
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 10..10,
+            severity: Error,
+            message: "expected tag prefix",
+        },
+    ],
 }

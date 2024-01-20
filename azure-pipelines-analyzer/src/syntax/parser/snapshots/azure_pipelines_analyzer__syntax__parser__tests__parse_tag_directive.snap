@@ -8,5 +8,11 @@ Parse {
       DirectiveName@1..4 "TAG"
       Error@4..4 ""
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 4..4,
+            severity: Error,
+            message: "expected tag handle",
+        },
+    ],
 }

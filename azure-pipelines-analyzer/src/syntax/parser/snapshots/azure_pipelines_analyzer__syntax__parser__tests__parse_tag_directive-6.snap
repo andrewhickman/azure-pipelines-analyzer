@@ -16,5 +16,11 @@ Parse {
           CommentToken@13..14 "#"
           CommentBody@14..21 "comment"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 5..8,
+            severity: Error,
+            message: "invalid tag handle: expected '!'",
+        },
+    ],
 }

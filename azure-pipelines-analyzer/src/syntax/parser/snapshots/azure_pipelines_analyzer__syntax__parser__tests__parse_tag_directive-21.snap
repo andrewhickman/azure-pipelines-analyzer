@@ -14,5 +14,16 @@ Parse {
         InlineSeparator@13..14 " "
         Error@14..19 "error"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 12..13,
+            severity: Error,
+            message: "invalid initial tag prefix character",
+        },
+        Diagnostic {
+            span: 14..19,
+            severity: Error,
+            message: "expected end of line",
+        },
+    ],
 }

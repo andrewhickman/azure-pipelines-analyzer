@@ -74,7 +74,9 @@ pub fn parse_tag_directive() {
     case!(directive("%TAG !yaml! ]"));
     case!(directive("%TAG !yaml! { #comment"));
     case!(directive("%TAG !yaml! } error"));
-    case!(directive("%TAG !yaml! !https://example.com:443/;[]()'*~!._,$+=&@?query=foo#fragment"));
+    case!(directive(
+        "%TAG !yaml! !https://example.com:443/;[]()'*~!._,$+=&@?query=foo#fragment"
+    ));
     case!(directive("%TAG !yaml! !ภาษา"));
     case!(directive("%TAG !yaml! !https://example.com:443/a%20space"));
     case!(directive("%TAG !yaml! !https://example.com:443/a%__space"));

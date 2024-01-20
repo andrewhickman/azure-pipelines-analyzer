@@ -10,5 +10,11 @@ Parse {
       NamedTagHandle@5..11 "!yaml!"
       Error@11..14 "foo"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 11..14,
+            severity: Error,
+            message: "expected tag prefix",
+        },
+    ],
 }

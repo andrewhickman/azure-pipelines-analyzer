@@ -13,9 +13,9 @@ pub type Span = Range<usize>;
 pub enum SyntaxKind {
     Error = 0,
     // Tokens
-    InlineSeparator,    // s-separate-in-line
-    LineBreak,          // b-break
-    CommentToken,       // c-comment
+    InlineSeparator, // s-separate-in-line
+    LineBreak,       // b-break
+    CommentToken,    // c-comment
     CommentBody,
     DirectiveToken,     // c-directive
     DirectiveName,      // ns-directive-name

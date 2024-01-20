@@ -8,6 +8,7 @@ use rowan::{Checkpoint, GreenNode, GreenNodeBuilder, SyntaxNode};
 use serde::Serialize;
 
 use crate::{
+    diagnostic::Severity,
     syntax::SyntaxKind::{self, *},
     Diagnostic,
 };
@@ -21,11 +22,14 @@ pub struct Parse {
 }
 
 pub fn parse(text: &[u8]) -> Parse {
-    let Ok(text) = encoding::decode(text) else {
-        return Parse {
-            errors: vec![Diagnostic::invalid_encoding()],
-            node: SyntaxNode::new_root(GreenNode::new(Error.into(), empty())),
-        };
+    let text = match encoding::decode(text) {
+        Ok(text) => text,
+        Err(err) => {
+            return Parse {
+                errors: vec![Diagnostic::new(0..0, Severity::Error, err)],
+                node: SyntaxNode::new_root(GreenNode::new(Error.into(), empty())),
+            }
+        }
     };
 
     let mut parser = Parser::new(text.as_ref());
@@ -40,7 +44,7 @@ struct Parser<'t> {
     text: &'t str,
     iter: Chars<'t>,
     builder: GreenNodeBuilder<'static>,
-    errors: Vec<Diagnostic>,
+    diagnostics: Vec<Diagnostic>,
 
     #[cfg(debug_assertions)]
     peek_count: std::sync::atomic::AtomicU32,
@@ -61,7 +65,7 @@ impl<'t> Parser<'t> {
             text,
             iter: text.chars(),
             builder,
-            errors: Vec::new(),
+            diagnostics: Vec::new(),
             #[cfg(debug_assertions)]
             peek_count: std::sync::atomic::AtomicU32::new(0),
         }
@@ -71,14 +75,14 @@ impl<'t> Parser<'t> {
         self.builder.finish_node();
         Parse {
             node: SyntaxNode::new_root(self.builder.finish()),
-            errors: self.errors,
+            errors: self.diagnostics,
         }
     }
 
     fn comment_text(&mut self) {
         let start = self.marker();
         if !self.eat_char('#') {
-            return self.error_line(start.pos);
+            return self.error_line(start.pos, "expected '#'");
         }
         self.token(CommentToken, start.pos);
 
@@ -98,7 +102,7 @@ impl<'t> Parser<'t> {
         } else if self.is_end_of_input() {
             return;
         } else {
-            return self.error_line(self.pos());
+            return self.error_line(self.pos(), "expected end of line");
         }
 
         self.line_comments();
@@ -126,12 +130,12 @@ impl<'t> Parser<'t> {
         let start = self.marker();
 
         if !self.eat_char('%') {
-            return self.error_line(self.pos());
+            return self.error_line(self.pos(), "expected '%'");
         }
         self.token(DirectiveToken, start.pos);
 
         if !self.is(is_non_whitespace_char) {
-            return self.error_line(self.pos());
+            return self.error_line(self.pos(), "expected directive name");
         }
 
         let name = self.eat_while(is_non_whitespace_char);
@@ -139,19 +143,19 @@ impl<'t> Parser<'t> {
 
         if self.get(name.clone()) == "YAML" {
             if !self.try_inline_separator() {
-                return self.error_line(self.pos());
+                return self.error_line(self.pos(), "expected YAML version");
             }
 
             self.yaml_version();
         } else if self.get(name) == "TAG" {
             if !self.try_inline_separator() {
-                return self.error_line(self.pos());
+                return self.error_line(self.pos(), "expected tag handle");
             }
 
             self.tag_handle();
 
             if !self.try_inline_separator() {
-                return self.error_line(self.pos());
+                return self.error_line(self.pos(), "expected tag prefix");
             }
 
             self.tag_prefix();
@@ -174,14 +178,14 @@ impl<'t> Parser<'t> {
     fn yaml_version(&mut self) {
         let start = self.pos();
         if !self.is(is_dec_digit) {
-            return self.error_token(start);
+            return self.error_token(start, "invalid YAML version: expected digit");
         }
         self.eat_while(is_dec_digit);
         if !self.eat_char('.') {
-            return self.error_token(start);
+            return self.error_token(start, "invalid YAML version: expected '.'");
         }
         if !self.is(is_dec_digit) {
-            return self.error_token(start);
+            return self.error_token(start, "invalid YAML version: expected digit");
         }
         self.eat_while(is_dec_digit);
 
@@ -191,13 +195,13 @@ impl<'t> Parser<'t> {
     fn tag_handle(&mut self) {
         let start = self.pos();
         if !self.eat_char('!') {
-            return self.error_token(start);
+            return self.error_token(start, "invalid tag handle: expected '!'");
         }
 
         if self.is(is_word_char) {
             self.eat_while(is_word_char);
             if !self.eat_char('!') {
-                return self.error_token(start);
+                return self.error_token(start, "invalid tag handle: expected '!'");
             }
             self.token(NamedTagHandle, start);
         } else if self.eat_char('!') {
@@ -211,7 +215,7 @@ impl<'t> Parser<'t> {
         let start = self.pos();
 
         if !self.eat_char('!') && (!self.is(is_uri_char) || self.is(is_flow_indicator)) {
-            return self.error_token(start);
+            return self.error_token(start, "invalid initial tag prefix character");
         }
 
         self.eat_while(is_uri_char);
@@ -316,18 +320,22 @@ impl<'t> Parser<'t> {
         start..end
     }
 
-    fn error_line(&mut self, start: usize) {
+    fn error_line(&mut self, start: usize, message: impl ToString) {
         while !self.is(is_break) && !self.is_end_of_input() {
             self.bump();
         }
         self.token(Error, start);
+        self.diagnostics
+            .push(Diagnostic::new(start..self.pos(), Severity::Error, message));
     }
 
-    fn error_token(&mut self, start: usize) {
+    fn error_token(&mut self, start: usize, message: impl ToString) {
         while !self.is(is_break) && !self.is_end_of_input() && !self.is_inline_separator() {
             self.bump();
         }
         self.token(Error, start);
+        self.diagnostics
+            .push(Diagnostic::new(start..self.pos(), Severity::Error, message));
     }
 
     fn token(&mut self, kind: SyntaxKind, start: usize) {
@@ -353,7 +361,11 @@ impl<'t> Parser<'t> {
 
     fn peek(&self) -> Option<char> {
         #[cfg(debug_assertions)]
-        if self.peek_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed) > 1000 {
+        if self
+            .peek_count
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+            > 1000
+        {
             panic!("detected infinite loop in parser");
         }
 
@@ -362,7 +374,8 @@ impl<'t> Parser<'t> {
 
     fn bump(&mut self) {
         #[cfg(debug_assertions)]
-        self.peek_count.store(0, std::sync::atomic::Ordering::Relaxed);
+        self.peek_count
+            .store(0, std::sync::atomic::Ordering::Relaxed);
         self.iter.next().expect("called bump at end of input");
     }
 
@@ -425,5 +438,29 @@ fn is_flow_indicator(ch: char) -> bool {
 }
 
 fn is_uri_char(ch: char) -> bool {
-    is_word_char(ch) || matches!(ch, '%' | '#' | ';' | '/' | '?' | ':' | '@' | '&' | '=' | '+' | '$' | ',' | '_' | '.' | '!' | '~' | '*' | '\'' | '(' | ')' | '[' | ']')
+    is_word_char(ch)
+        || matches!(
+            ch,
+            '%' | '#'
+                | ';'
+                | '/'
+                | '?'
+                | ':'
+                | '@'
+                | '&'
+                | '='
+                | '+'
+                | '$'
+                | ','
+                | '_'
+                | '.'
+                | '!'
+                | '~'
+                | '*'
+                | '\''
+                | '('
+                | ')'
+                | '['
+                | ']'
+        )
 }

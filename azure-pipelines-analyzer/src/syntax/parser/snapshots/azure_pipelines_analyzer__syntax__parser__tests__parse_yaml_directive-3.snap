@@ -8,5 +8,11 @@ Parse {
       DirectiveName@1..5 "YAML"
       Error@5..5 ""
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 5..5,
+            severity: Error,
+            message: "expected YAML version",
+        },
+    ],
 }

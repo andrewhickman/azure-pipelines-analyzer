@@ -10,5 +10,11 @@ Parse {
       SecondaryTagHandle@5..7 "!!"
       Error@7..7 ""
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 7..7,
+            severity: Error,
+            message: "expected tag prefix",
+        },
+    ],
 }

@@ -16,5 +16,11 @@ Parse {
           CommentToken@14..15 "#"
           CommentBody@15..22 "comment"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 12..13,
+            severity: Error,
+            message: "invalid initial tag prefix character",
+        },
+    ],
 }

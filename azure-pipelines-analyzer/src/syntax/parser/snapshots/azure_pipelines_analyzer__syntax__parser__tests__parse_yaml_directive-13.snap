@@ -12,5 +12,11 @@ Parse {
         InlineSeparator@13..14 " "
         Error@14..26 "foo #comment"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 14..26,
+            severity: Error,
+            message: "expected end of line",
+        },
+    ],
 }

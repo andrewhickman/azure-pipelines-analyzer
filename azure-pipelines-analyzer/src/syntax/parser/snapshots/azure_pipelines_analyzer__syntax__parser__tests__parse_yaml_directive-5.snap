@@ -10,5 +10,11 @@ Parse {
         InlineSeparator@5..6 " "
         Error@6..14 "#comment"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 6..14,
+            severity: Error,
+            message: "invalid YAML version: expected digit",
+        },
+    ],
 }

@@ -13,5 +13,11 @@ Parse {
         TagPrefix@12..13 "!"
         Error@13..25 "ภาษา"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 13..25,
+            severity: Error,
+            message: "expected end of line",
+        },
+    ],
 }

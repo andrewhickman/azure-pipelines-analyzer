@@ -12,5 +12,11 @@ Parse {
         InlineSeparator@8..9 " "
         TagPrefix@9..12 "bar"
     ,
-    errors: [],
+    errors: [
+        Diagnostic {
+            span: 5..8,
+            severity: Error,
+            message: "invalid tag handle: expected '!'",
+        },
+    ],
 }
