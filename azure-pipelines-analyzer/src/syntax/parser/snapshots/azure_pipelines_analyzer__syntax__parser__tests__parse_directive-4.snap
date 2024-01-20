@@ -1,16 +1,11 @@
 ---
 source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
-expression: parser.finish()
+expression: parse
 ---
 Parse {
-    node: Directive@0..27
+    node: Root@0..3
       DirectiveToken@0..1 "%"
-      DirectiveName@1..5 "YAML"
-      DirectiveParameter@5..8 "1.2"
-      CommentToken@8..9 "#"
-      CommentText@9..17 "#comment"
-      CommentToken@17..18 "#"
-      CommentText@18..27 "#comment2"
+      Error@1..3 "  "
     ,
     errors: [],
 }

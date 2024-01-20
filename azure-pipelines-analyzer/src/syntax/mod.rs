@@ -4,21 +4,35 @@ use std::ops::Range;
 
 mod parser;
 
+pub use self::parser::{parse, Parse};
+
 pub type Span = Range<usize>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u16)]
 pub enum SyntaxKind {
     Error = 0,
-    CommentToken,   // c-comment
-    DirectiveToken, // c-directive
-
-    CommentText,        // c-nb-comment-text
-    Directive,          // l-directive
+    // Tokens
+    InlineSeparator,    // s-separate-in-line
+    LineBreak,          // b-break
+    CommentToken,       // c-comment
+    CommentBody,
+    DirectiveToken,     // c-directive
     DirectiveName,      // ns-directive-name
     DirectiveParameter, // ns-directive-parameter
+    YamlVersion,        // ns-yaml-version
+    NamedTagHandle,     // c-named-tag-handle
+    SecondaryTagHandle, // c-named-tag-handle
+    PrimaryTagHandle,   // c-named-tag-handle
+    TagPrefix,          // ns-tag-prefix
+    // Nodes
+    CommentText,       // c-nb-comment-text
+    Directive,         // l-directive
+    YamlDirective,     // ns-yaml-directive
+    TagDirective,      // ns-tag-directive
+    ReservedDirective, // ns-tag-directive
 
-    Max,
+    Root,
 }
 
 impl From<SyntaxKind> for rowan::SyntaxKind {
@@ -34,7 +48,7 @@ impl rowan::Language for Yaml {
     type Kind = SyntaxKind;
 
     fn kind_from_raw(raw: rowan::SyntaxKind) -> Self::Kind {
-        assert!(raw.0 <= SyntaxKind::Max as u16);
+        assert!(raw.0 <= SyntaxKind::Root as u16);
         unsafe { std::mem::transmute::<u16, SyntaxKind>(raw.0) }
     }
 

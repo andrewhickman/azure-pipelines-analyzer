@@ -3,9 +3,12 @@ source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
 expression: parse
 ---
 Parse {
-    node: Root@0..1
+    node: Root@0..8
       DirectiveToken@0..1 "%"
-      Error@1..1 ""
+      DirectiveName@1..4 "TAG"
+      InlineSeparator@4..5 " "
+      SecondaryTagHandle@5..7 "!!"
+      Error@7..8 "!"
     ,
     errors: [],
 }

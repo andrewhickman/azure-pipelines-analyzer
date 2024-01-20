@@ -1,0 +1,18 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parser.finish()
+---
+Parse {
+    node: Root@0..19
+      Directive@0..19
+        DirectiveToken@0..1 "%"
+        DirectiveName@1..4 "DIR"
+        InlineSeparator@4..5 " "
+        DirectiveParameter@5..9 "arg1"
+        LineBreak@9..11 "\r\n"
+        CommentText@11..19
+          CommentToken@11..12 "#"
+          CommentBody@12..19 "comment"
+    ,
+    errors: [],
+}

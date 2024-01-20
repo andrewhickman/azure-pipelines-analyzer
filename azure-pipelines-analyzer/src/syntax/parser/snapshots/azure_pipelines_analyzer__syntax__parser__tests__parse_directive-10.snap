@@ -3,8 +3,10 @@ source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
 expression: parser.finish()
 ---
 Parse {
-    node: Error@0..3
-      Error@0..3 "foo"
+    node: Root@0..8
+      Directive@0..8
+        DirectiveToken@0..1 "%"
+        DirectiveName@1..8 "DIR#dir"
     ,
     errors: [],
 }

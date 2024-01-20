@@ -1,6 +1,4 @@
-#![allow(unused)]
-
 mod diagnostic;
-mod syntax;
+pub mod syntax;
 
 pub use self::diagnostic::Diagnostic;
