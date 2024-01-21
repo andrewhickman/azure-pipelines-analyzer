@@ -1,0 +1,16 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..0
+      Error@0..0 ""
+    ,
+    errors: [
+        Diagnostic {
+            span: 0..0,
+            severity: Error,
+            message: "expected '!'",
+        },
+    ],
+}

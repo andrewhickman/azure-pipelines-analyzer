@@ -1,0 +1,12 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..4
+      TagProperty@0..4
+        PrimaryTagHandle@0..1 "!"
+        TagSuffix@1..4 "foo"
+    ,
+    errors: [],
+}

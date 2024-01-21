@@ -1,0 +1,18 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..5
+      VerbatimTagStart@0..2 "!<"
+      VerbatimTag@2..5 "foo"
+      Error@5..5 ""
+    ,
+    errors: [
+        Diagnostic {
+            span: 5..5,
+            severity: Error,
+            message: "expected '>'",
+        },
+    ],
+}

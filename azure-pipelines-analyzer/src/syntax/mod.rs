@@ -10,23 +10,47 @@ pub type Span = Range<usize>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u16)]
-pub enum SyntaxKind {
+enum SyntaxKind {
     Error = 0,
     // Tokens
     InlineSeparator, // s-separate-in-line
     LineBreak,       // b-break
     CommentToken,    // c-comment
     CommentBody,
+    AliasToken,  // c-alias
+    AnchorToken, // c-anchor
+    AnchorName,  // ns-anchor-name
+    TagToken,    // c-tag
+    TagSuffix,
+    VerbatimTagStart,   // '!<'
+    VerbatimTagEnd,     // '>'
     DirectiveToken,     // c-directive
     DirectiveName,      // ns-directive-name
     DirectiveParameter, // ns-directive-parameter
     YamlVersion,        // ns-yaml-version
     NamedTagHandle,     // c-named-tag-handle
-    SecondaryTagHandle, // c-named-tag-handle
-    PrimaryTagHandle,   // c-named-tag-handle
+    SecondaryTagHandle, // c-secondary-tag-handle
+    PrimaryTagHandle,   // c-primary-tag-handle
+    NonSpecificTag,     // c-non-specific-tag
     TagPrefix,          // ns-tag-prefix
+    VerbatimTag,        // c-verbatim-tag
+    SequenceStart,      // c-sequence-start
+    SequenceEnd,        // c-sequence-end
+    MappingStart,       // c-mapping-start
+    MappingEnd,         // c-mapping-end
+    SingleQuote,        // c-single-quote
+    DoubleQuote,        // c-double-quote
     // Nodes
+    AliasNode,         // c-ns-alias-node
+    AnchorProperty,    // c-ns-anchor-property
+    TagProperty,       // c-ns-tag-property
     CommentText,       // c-nb-comment-text
+    FlowNode,          // ns-flow-node
+    FlowContent,       // ns-flow-content(n,c)
+    FlowSequence,      // c-flow-sequence(n,c)
+    FlowMapping,       // c-flow-mapping(n,c)
+    SingleQuoted,      // c-single-quoted(n,c)
+    DoubleQuoted,      // c-double-quoted(n,c)
     Directive,         // l-directive
     YamlDirective,     // ns-yaml-directive
     TagDirective,      // ns-tag-directive

@@ -1,0 +1,13 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..7
+      TagProperty@0..7
+        VerbatimTagStart@0..2 "!<"
+        VerbatimTag@2..6 "!bar"
+        VerbatimTagEnd@6..7 ">"
+    ,
+    errors: [],
+}

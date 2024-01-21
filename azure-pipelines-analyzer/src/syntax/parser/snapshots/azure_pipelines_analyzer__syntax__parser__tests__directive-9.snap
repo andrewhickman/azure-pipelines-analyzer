@@ -1,0 +1,14 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..6
+      Directive@0..6
+        DirectiveToken@0..1 "%"
+        ReservedDirective@1..4
+          DirectiveName@1..4 "DIR"
+        InlineSeparator@4..6 "  "
+    ,
+    errors: [],
+}

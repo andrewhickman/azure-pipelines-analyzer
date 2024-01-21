@@ -1,0 +1,18 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..2
+      TagProperty@0..2
+        SecondaryTagHandle@0..2 "!!"
+        Error@2..2 ""
+    ,
+    errors: [
+        Diagnostic {
+            span: 2..2,
+            severity: Error,
+            message: "expected tag suffix",
+        },
+    ],
+}

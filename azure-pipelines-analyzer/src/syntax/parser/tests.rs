@@ -14,7 +14,7 @@ macro_rules! case {
 }
 
 #[test]
-pub fn parse_directive() {
+pub fn directive() {
     case!(directive(""));
     case!(directive("foo\nbar\n"));
     case!(directive("%"));
@@ -35,7 +35,7 @@ pub fn parse_directive() {
 }
 
 #[test]
-pub fn parse_yaml_directive() {
+pub fn yaml_directive() {
     case!(directive("%YAML"));
     case!(directive("%YAML\n"));
     case!(directive("%YAML\nfoo"));
@@ -52,7 +52,7 @@ pub fn parse_yaml_directive() {
 }
 
 #[test]
-pub fn parse_tag_directive() {
+pub fn tag_directive() {
     case!(directive("%TAG"));
     case!(directive("%TAG\n"));
     case!(directive("%TAG\nfoo"));
@@ -84,4 +84,33 @@ pub fn parse_tag_directive() {
     case!(directive("%TAG !yaml! ![example.com]"));
     case!(directive("%TAG !yaml! ![example.com]"));
     case!(directive("%TAG !yaml! !tag:yaml.org,2002:"));
+}
+
+#[test]
+fn tag_property() {
+    case!(tag_property(""));
+    case!(tag_property("\n"));
+    case!(tag_property("!"));
+    case!(tag_property("! "));
+    case!(tag_property("!\n"));
+    case!(tag_property("!< "));
+    case!(tag_property("!<\n"));
+    case!(tag_property("!<>"));
+    case!(tag_property("!<foo>"));
+    case!(tag_property("!<tag:yaml.org,2002:str>"));
+    case!(tag_property("!<!bar>"));
+    case!(tag_property("!<!foo"));
+    case!(tag_property("!<foo"));
+    case!(tag_property("!f"));
+    case!(tag_property("!(foo)"));
+    case!(tag_property("!foo!"));
+    case!(tag_property("!~!"));
+    case!(tag_property("!(foo)!bar"));
+    case!(tag_property("!foo"));
+    case!(tag_property("!foo!bar"));
+    case!(tag_property("!foo!(bar)"));
+    case!(tag_property("!!"));
+    case!(tag_property("!!suffix"));
+    case!(tag_property("!!(bar)"));
+    case!(tag_property("!![bar]"));
 }

@@ -1,0 +1,20 @@
+---
+source: azure-pipelines-analyzer/src/syntax/parser/tests.rs
+expression: parse
+---
+Parse {
+    node: Root@0..10
+      TagProperty@0..10
+        TagToken@0..1 "!"
+        Error@1..6 "(foo)"
+        TagToken@6..7 "!"
+        TagSuffix@7..10 "bar"
+    ,
+    errors: [
+        Diagnostic {
+            span: 1..6,
+            severity: Error,
+            message: "invalid character in tag handle",
+        },
+    ],
+}
